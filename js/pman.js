@@ -104,15 +104,56 @@ Pacman.prototype.move = function(direction) {
     var left = parseInt(style.getPropertyValue("left")),
         top = parseInt(style.getPropertyValue("top")) + 3;
     var l = 0;
-    for(var i = left; i < 200; i = i + 4) {
-        pm.style.left = i +"px";
-        if((i % 8 == 0) && (top % 8 == 0)) {
-            var el = document.getElementById(getFoodElement(top, i));
-            var el2 = document.getElementById(getFoodElement(top, i + 8));
-            if(el2.classList.contains("wall")) break;
-            el.style.display = "none";
-        }
+    switch(direction) {
+        case "right":
+            for(var i = left; i < 200; i = i + 4) {
+                pm.style.left = i +"px";
+                if((i % 8 == 0) && (top % 8 == 0)) {
+                    var el = document.getElementById(getFoodElement(top, i));
+                    var el2 = document.getElementById(getFoodElement(top, i + 8));
+                    if(el2.classList.contains("wall")) break;
+                    el.style.display = "none";
+                }
+            }
+            break;
+        case "left":
+            for(var i = left; i != 0; i = i - 4) {
+                pm.style.left = i +"px";
+                if((i % 8 == 0) && (top % 8 == 0)) {
+                    var el = document.getElementById(getFoodElement(top, i));
+                    var el2 = document.getElementById(getFoodElement(top, i - 8));
+                    if(el2.classList.contains("wall")) break;
+                    el.style.display = "none";
+                }
+            }
+            break;
+        case "top":
+            for(var i = top; i != 0; i = i - 4) {
+                pm.style.top = i +"px";
+                if((i % 8 == 0) && (left % 8 == 0)) {
+                    var el = document.getElementById(getFoodElement(i, left));
+                    console.log(el);
+                    var el2 = document.getElementById(getFoodElement(i - 8, left));
+                    if(el2.classList.contains("wall")) break;
+                    el.style.display = "none";
+                }
+            }
+            break;
+        case "bottom":
+            for(var i = top; i < 300; i = i + 4) {
+                console.log(i);
+                pm.style.top = i +"px";
+                if((i % 8 == 0) && (left % 8 == 0)) {
+                    var el = document.getElementById(getFoodElement(i, left));
+                    console.log(el);
+                    var el2 = document.getElementById(getFoodElement(i + 8, left));
+                    if(el2.classList.contains("wall")) break;
+                    el.style.display = "none";
+                }
+            }
+            break;
     }
+
 
 };
 
@@ -121,7 +162,16 @@ Pacman.prototype.a = function(event) {
     var pm = new Pacman();
 
     if(event.keyCode == 37 ) {
-        pm.move(direction);
+        pm.move("left");
+    }
+    if(event.keyCode == 39 ) {
+        pm.move("right");
+    }
+    if(event.keyCode == 38 ) {
+        pm.move("top");
+    }
+    if(event.keyCode == 40 ) {
+        pm.move("bottom");
     }
 };
 
