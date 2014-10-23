@@ -38,6 +38,10 @@ var map = [
 function Map() {
 }
 
+Map.prototype.renderWall  = function() {
+
+};
+
 Map.prototype.renderMap = function() {
     var mapBody  = document.getElementsByClassName("b-map")[0];
     var wall;
@@ -46,6 +50,18 @@ Map.prototype.renderMap = function() {
             wall = document.createElement("div");
             if (map[i][j] == 1) {
                 wall.className = "wall";
+                if(map[(i + 1)][j] == 0 && ((i + 1) < map[i].length)) {
+                    wall.className = "wall t-half";
+                }
+                if(map[(i - 1)][j] == 0 && ((i + 1) < map[i].length)) {
+                    wall.className = "wall b-half";
+                }
+                if(map[(i)][j + 1] == 0) {
+                    wall.className = "wall r-half";
+                }
+                if(map[(i)][j - 1] == 0) {
+                    wall.className = "wall l-half";
+                }
                 wall.id = getFoodElement(i*8, j*8);
                 wall.style.left = j * 8 +"px";
                 wall.style.top = i * 8 +"px";
