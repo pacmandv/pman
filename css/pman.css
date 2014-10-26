@@ -16,7 +16,6 @@
 .map .b-map {
     height: 248px;
     position: relative;
-    /*background-color: blue;*/
 }
 
 .map .f-map {
@@ -27,31 +26,73 @@
     width: 8px;
     height: 8px;
     background-color: blue;
-    /*border-radius: 5px;*/
     position: absolute;
 }
 
+.map .wall.bl-border,
+.map .wall.br-border,
+.map .wall.b-half,
 .map .wall.t-half {
     height: 4px;
 }
 
-.map .wall.b-half {
-    height: 4px;
-}
-
+.map .wall.l-half,
 .map .wall.r-half {
     width: 4px;
 }
 
+.map .wall.tl-border {
+    border-top-left-radius: 50%;
+}
 
-/*.map .wall.l-half {*/
-    /*width: 4px;*/
-/*}*/
+.map .wall.tr-border {
+    border-top-right-radius: 50%;
+}
+
+.map .wall.br-border {
+    border-bottom-right-radius: 50%;
+}
+
+.map .wall.bl-border {
+    border-bottom-left-radius: 50%;
+}
+
+.map .br-corner,
+.map .bl-corner,
+.map .tr-corner,
+.map .tl-corner {
+    height: 4px;
+    width: 4px;
+    position: absolute;
+    background-color: #000;
+    z-index: 5;
+}
+
+.map .tl-corner {
+    border-top-left-radius: 50%;
+}
+
+.map .tr-corner {
+    border-bottom-left-radius: 50%;
+}
+
+.map .bl-corner {
+    border-top-right-radius: 50%;
+}
+.map .br-corner {
+    border-bottom-right-radius: 50%;
+}
 
 .map .n-wall {
-    display: inline-block;
     width: 8px;
     height: 8px;
+}
+
+.map .door {
+    height: 2px;
+    width: 8px;
+    position: absolute;
+    background-color: purple;
 }
 
 .map .food {
@@ -67,6 +108,14 @@
 .map .pm {
     width: 12px;
     height: 12px;
+    background-color: yellow;
+    border-radius: 50%;
+    position: absolute;
+}
+
+.map .energizer {
+    width: 6px;
+    height: 6px;
     background-color: yellow;
     border-radius: 50%;
     position: absolute;
