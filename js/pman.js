@@ -1,7 +1,7 @@
 //Свойства
 var properties = {
     mapElement: {
-        elementSize: 8,
+        elementSize: 12,
         empty: 0,
         wall: 1,
         food: 2,
@@ -119,6 +119,7 @@ Map.prototype.createElementInTunnel = function(cls, i, j) {
 //Сторим карту из єлементов
 Map.prototype.renderMap = function () {
     var doorYShift = 3;
+    var energizerLeftShift = 2;
     var mapBody = document.getElementsByClassName("b-map")[0];
     var wall;
     for (var i = 0; i < map.length; i++) {
@@ -134,14 +135,14 @@ Map.prototype.renderMap = function () {
                 }
                 if (i > 0 && (map[(i - 1)][j] == properties.mapElement.food || map[(i - 1)][j] == properties.mapElement.energizer)) {
                     cls += " b-half";
-                    shiftBottom = 4;
+                    shiftBottom = properties.mapElement.elementSize / 2;
                 }
                 if (map[(i)][j + 1] == properties.mapElement.food || map[(i)][j + 1] == properties.mapElement.energizer) {
                     cls += " r-half";
                 }
                 if (map[(i)][j - 1] == properties.mapElement.food || map[(i)][j - 1] == properties.mapElement.energizer) {
                     cls += " l-half";
-                    shiftLeft = 4;
+                    shiftLeft = properties.mapElement.elementSize / 2;
                 }
                 cls += this.getOuterRoundCorner(i, j);
                 (this.getInnerRoundCorner(i, j)) ? mapBody.appendChild(this.getInnerRoundCorner(i, j)) : "";
@@ -167,6 +168,7 @@ Map.prototype.renderMap = function () {
 
 var m = new Map();
 m.renderMap();
+
 function Pacman() {
 
 }
