@@ -111,6 +111,7 @@
     background-color: yellow;
     border-radius: 50%;
     position: absolute;
+    margin-top: -8px;
 }
 
 .map .energizer {
