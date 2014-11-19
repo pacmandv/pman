@@ -1,18 +1,13 @@
 //Свойства
 var properties = {
     mapElement: {
-        elementSize: 12,
+        elementSize: 8,
         empty: 0,
         wall: 1,
         food: 2,
         door: 3,
         energizer: 4,
         pacman: 5
-    },
-    pacman: {
-        speed: 1,
-        positionTop: 208,
-        positionLeft: 192
     }
 };
 
@@ -124,7 +119,6 @@ Map.prototype.createElementInTunnel = function(cls, i, j) {
 //Сторим карту из єлементов
 Map.prototype.renderMap = function () {
     var doorYShift = 3;
-    var energizerLeftShift = 2;
     var mapBody = document.getElementsByClassName("b-map")[0];
     var wall;
     for (var i = 0; i < map.length; i++) {
@@ -140,14 +134,14 @@ Map.prototype.renderMap = function () {
                 }
                 if (i > 0 && (map[(i - 1)][j] == properties.mapElement.food || map[(i - 1)][j] == properties.mapElement.energizer)) {
                     cls += " b-half";
-                    shiftBottom = properties.mapElement.elementSize / 2;
+                    shiftBottom = 4;
                 }
                 if (map[(i)][j + 1] == properties.mapElement.food || map[(i)][j + 1] == properties.mapElement.energizer) {
                     cls += " r-half";
                 }
                 if (map[(i)][j - 1] == properties.mapElement.food || map[(i)][j - 1] == properties.mapElement.energizer) {
                     cls += " l-half";
-                    shiftLeft = properties.mapElement.elementSize / 2;
+                    shiftLeft = 4;
                 }
                 cls += this.getOuterRoundCorner(i, j);
                 (this.getInnerRoundCorner(i, j)) ? mapBody.appendChild(this.getInnerRoundCorner(i, j)) : "";
@@ -173,7 +167,6 @@ Map.prototype.renderMap = function () {
 
 var m = new Map();
 m.renderMap();
-
 function Pacman() {
 
 }
@@ -201,62 +194,99 @@ Pacman.prototype.setDirection = function () {
 
 };
 
+Pacman.prototype.findDestinationPoint = function (positionX, positionY) {
+    for (var i = positionX; i >= 0; i - 8) {
+        console.log(i);
+        //var el2 = document.getElementById(m.getFoodElement(positionY, i - 8));
+        //if(el2.classList.contains("wall")) {
+        //    return i;
+        //}
+
+    }
+};
+
 Pacman.prototype.move = function (direction) {
     var pm = document.getElementsByClassName("pm")[0];
     var style = window.getComputedStyle(pm);
     var left = parseInt(style.getPropertyValue("left")),
-        top = parseInt(style.getPropertyValue("top")) - 4;
-    console.log(left + " / " + top);
+        top = parseInt(style.getPropertyValue("top"));
     var l = 0;
-    switch (direction) {
+    var pmn = new Pacman();
+    //switch (direction) {
     //    case "right":
-    //        for (var i = left; i < 200; i = i + 4) {
+    //        console.log(left + " / " + top);
+    //        for (var i = left; i < 300; i = i + 8) {
     //            pm.style.left = i + "px";
     //            if ((i % 8 == 0) && (top % 8 == 0)) {
-    //                var el = document.getElementById(getFoodElement(top, i));
-    //                var el2 = document.getElementById(getFoodElement(top, i + 8));
+    //                var el = document.getElementById(m.getFoodElement(top, i));
+    //                var el2 = document.getElementById(m.getFoodElement(top, i + 8));
     //                if (el2.classList.contains("wall")) break;
     //                el.style.display = "none";
     //            }
     //        }
     //        break;
-        case "left":
-            for (var i = left; i >= 0; i = i - properties.mapElement.elementSize) {
-                pm.style.left = 18 + "px";
-                if ((i % properties.mapElement.elementSize == 0) && (top % properties.mapElement.elementSize == 0)) {
-                    var el = document.getElementById(m.getFoodElement(top, i));
-                    var el2 = document.getElementById(m.getFoodElement(top, i - properties.mapElement.elementSize));
-                    if (el2.classList.contains("wall")) break;
-                    el.style.display = "none";
-                }
-            }
-            break;
-    //    case "top":
-    //        for (var i = top; i != 0; i = i - 4) {
-    //            pm.style.top = i + "px";
-    //            if ((i % 8 == 0) && (left % 8 == 0)) {
-    //                var el = document.getElementById(getFoodElement(i, left));
-    //                console.log(el);
-    //                var el2 = document.getElementById(getFoodElement(i - 8, left));
-    //                if (el2.classList.contains("wall")) break;
-    //                el.style.display = "none";
-    //            }
-    //        }
-    //        break;
-    //    case "bottom":
-    //        for (var i = top; i < 300; i = i + 4) {
-    //            console.log(i);
-    //            pm.style.top = i + "px";
-    //            if ((i % 8 == 0) && (left % 8 == 0)) {
-    //                var el = document.getElementById(getFoodElement(i, left));
-    //                console.log(el);
-    //                var el2 = document.getElementById(getFoodElement(i + 8, left));
-    //                if (el2.classList.contains("wall")) break;
-    //                el.style.display = "none";
-    //            }
-    //        }
-    //        break;
-    }
+    //    case "left":
+            console.log(left + " / " + top);
+            console.log(pmn.findDestinationPoint(left, top));
+
+
+
+                //for (var i = left; i != 0; i = i - 8) {
+                //    (function(i) {
+                        var i =  left;
+                       var t =  setInterval(function() {
+
+
+                                var el2 = document.getElementById(m.getFoodElement(top, i));
+                                //if (!el2.classList.contains("wall")) {
+                                if (i != 48) {
+                                    pm.style.left = i + "px";
+                                    if ((i % 8 == 0) && (top % 8 == 0)) {
+                                        var el = document.getElementById(m.getFoodElement(top, i));
+                                        console.log(el);
+
+                                        el.style.display = "none";
+                                    }
+
+                            } else {
+                                clearInterval(t);
+                            }
+
+                           i -= 1;
+
+                        }, 50);
+                    //})(i);
+
+                //}
+        //    break;
+        //case "top":
+        //    console.log(left + " / " + top);
+        //    for (var i = top; i != 0; i = i - 8) {
+        //        pm.style.top = i + "px";
+        //        if ((i % 8 == 0) && (left % 8 == 0)) {
+        //            var el = document.getElementById(m.getFoodElement(i, left));
+        //            console.log(el);
+        //            var el2 = document.getElementById(m.getFoodElement(i - 8, left));
+        //            if (el2.classList.contains("wall")) break;
+        //            el.style.display = "none";
+        //        }
+        //    }
+        //    break;
+        //case "bottom":
+        //    console.log(left + " / " + top);
+        //    for (var i = top; i < 300; i = i + 4) {
+        //        console.log(i);
+        //        pm.style.top = i + "px";
+        //        if ((i % 8 == 0) && (left % 8 == 0)) {
+        //            var el = document.getElementById(m.getFoodElement(i, left));
+        //            console.log(el);
+        //            var el2 = document.getElementById(m.getFoodElement(i + 8, left));
+        //            if (el2.classList.contains("wall")) break;
+        //            el.style.display = "none";
+        //        }
+        //    }
+        //    break;
+    //};
 
 
 };
@@ -266,7 +296,7 @@ Pacman.prototype.a = function (event) {
     var pm = new Pacman();
 
     if (event.keyCode == 37) {
-        pm.move("left");
+        pm.move();
     }
     if (event.keyCode == 39) {
         pm.move("right");
@@ -281,5 +311,5 @@ Pacman.prototype.a = function (event) {
 
 var pm = new Pacman();
 
-pm.create(properties.pacman.positionLeft, properties.pacman.positionTop);
+pm.create(88, 184);
 window.addEventListener("keydown", pm.a, false);

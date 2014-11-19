@@ -1,30 +1,30 @@
 .map {
-    width: 336px;
-    height: 432px;
+    width: 224px;
+    height: 288px;
     background-color: black;
     font-size: 0;
     margin: auto;
 }
 
 .map .m-head {
-    height: 36px;
+    height: 24px;
     color: #FFF;
     font-size: 10px;
     text-align: center;
 }
 
 .map .b-map {
-    height: 372px;
+    height: 248px;
     position: relative;
 }
 
 .map .f-map {
-    height: 24px;
+    height: 16px;
 }
 
 .map .wall {
-    width: 12px;
-    height: 12px;
+    width: 8px;
+    height: 8px;
     background-color: blue;
     position: absolute;
 }
@@ -33,12 +33,12 @@
 .map .wall.br-border,
 .map .wall.b-half,
 .map .wall.t-half {
-    height: 6px;
+    height: 4px;
 }
 
 .map .wall.l-half,
 .map .wall.r-half {
-    width: 6px;
+    width: 4px;
 }
 
 .map .wall.tl-border {
@@ -61,8 +61,8 @@
 .map .bl-corner,
 .map .tr-corner,
 .map .tl-corner {
-    height: 6px;
-    width: 6px;
+    height: 4px;
+    width: 4px;
     position: absolute;
     background-color: #000;
     z-index: 5;
@@ -84,41 +84,39 @@
 }
 
 .map .n-wall {
-    width: 12px;
-    height: 12px;
+    width: 8px;
+    height: 8px;
 }
 
 .map .door {
-    height: 3px;
-    width: 12px;
+    height: 2px;
+    width: 8px;
     position: absolute;
     background-color: purple;
 }
 
 .map .food {
     background-color: yellow;
-    width: 3px;
-    height: 3px;
-    margin-top: 5px;
-    margin-left: 5px;
+    width: 2px;
+    height: 2px;
+    margin-top: 3px;
+    margin-left: 3px;
     border-radius: 50%;
     position: absolute;
 }
 
 .map .pm {
-    width: 18px;
-    height: 18px;
+    width: 12px;
+    height: 12px;
     background-color: yellow;
     border-radius: 50%;
     position: absolute;
-    margin-top: -8px;
 }
 
 .map .energizer {
-    width: 9px;
-    height: 9px;
+    width: 6px;
+    height: 6px;
     background-color: yellow;
     border-radius: 50%;
     position: absolute;
-    margin-left: 2px;
 }
