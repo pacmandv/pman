@@ -8,6 +8,20 @@ var properties = {
         door: 3,
         energizer: 4,
         pacman: 5
+    },
+    textVar: {
+        wall: 'wall',
+        left: 'left',
+        top: 'top'
+    },
+    ghost: {
+
+    },
+    key: {
+    left: 37,
+    up: 38,
+    right: 39,
+    down: 40
     }
 };
 
@@ -127,7 +141,7 @@ Map.prototype.renderMap = function () {
                 var shiftBottom = 0;
                 var shiftLeft = 0;
                 wall = document.createElement("div");
-                var cls = "wall";
+                var cls = properties.textVar.wall;
                 //Смещения стен оносительно тунеля
                 if (i <= map[i].length && (map[(i + 1)][j] == properties.mapElement.food || map[(i + 1)][j] == properties.mapElement.energizer)) {
                     cls += " t-half";
@@ -166,42 +180,73 @@ Map.prototype.renderMap = function () {
 };
 
 var m = new Map();
+
 m.renderMap();
+
 function Pacman() {
 
 }
 
+function Environment() {
+}
 
-Pacman.prototype.create = function (left, top) {
-    var pm = document.createElement("div");
-    pm.className = "pm";
-    pm.style.left = left + "px";
-    pm.style.top = top + "px";
-    //pm.id = "pm";
+Environment.prototype.createEnvironment = function(positionX, positionY, className) {
+    var environment = document.createElement("div");
+    environment.className = className;
+    environment.style.left = positionX + "px";
+    environment.style.top = positionY + "px";
     var mapBody = document.getElementsByClassName("b-map")[0];
-    mapBody.appendChild(pm);
+    mapBody.appendChild(environment);
 };
 
-
-//var key = {
-//    LEFT: 37,
-//    UP: 38,
-//    RIGHT: 39,
-//    DOWN: 40
-//};
+Pacman.prototype = Object.create(Environment.prototype);
 
 Pacman.prototype.setDirection = function () {
 
 };
 
-Pacman.prototype.findDestinationPoint = function (positionX, positionY) {
-    for (var i = positionX; i >= 0; i - 8) {
-        console.log(i);
-        //var el2 = document.getElementById(m.getFoodElement(positionY, i - 8));
-        //if(el2.classList.contains("wall")) {
-        //    return i;
-        //}
+//Находим вход в новій туннель для пакмана, если біл изменинён путь следования
+Pacman.prototype.findFirstToTurn = function () {
 
+};
+
+//Находим финальную точку в туннели для пакмана
+//Find how todo this method 1 for 4?
+Pacman.prototype.findDestinationPointLeft = function (positionX, positionY) {
+    for (var i = positionX; i >= 0; i = i - properties.mapElement.elementSize) {
+        var el2 = document.getElementById(m.getFoodElement(positionY, i));
+        if(el2.classList.contains(properties.textVar.wall)) {
+            return i + properties.mapElement.elementSize;
+        }
+    }
+};
+
+Pacman.prototype.findDestinationPointRight = function (positionX, positionY) {
+    for (var i = positionX; i <= 500; i = i + properties.mapElement.elementSize) {
+        var el2 = document.getElementById(m.getFoodElement(positionY, i));
+        if(el2.classList.contains(properties.textVar.wall)) {
+            return i - properties.mapElement.elementSize;
+        }
+    }
+};
+
+Pacman.prototype.findDestinationPointTop = function (positionX, positionY) {
+    for (var i = positionY; i >= 0; i = i - properties.mapElement.elementSize) {
+        console.log(i);
+        var el2 = document.getElementById(m.getFoodElement(i, positionX));
+        if(el2.classList.contains(properties.textVar.wall)) {
+            return i + properties.mapElement.elementSize;
+        }
+    }
+};
+
+Pacman.prototype.findDestinationPointBottom = function (positionX, positionY) {
+    for (var i = positionY; i <= 500; i = i + properties.mapElement.elementSize) {
+        console.log(i);
+        var el2 = document.getElementById(m.getFoodElement(i, positionX));
+        if(el2.classList.contains(properties.textVar.wall)) {
+            return i - properties.mapElement.elementSize;
+        }
     }
 };
 
@@ -212,104 +257,126 @@ Pacman.prototype.move = function (direction) {
         top = parseInt(style.getPropertyValue("top"));
     var l = 0;
     var pmn = new Pacman();
-    //switch (direction) {
-    //    case "right":
-    //        console.log(left + " / " + top);
-    //        for (var i = left; i < 300; i = i + 8) {
-    //            pm.style.left = i + "px";
-    //            if ((i % 8 == 0) && (top % 8 == 0)) {
-    //                var el = document.getElementById(m.getFoodElement(top, i));
-    //                var el2 = document.getElementById(m.getFoodElement(top, i + 8));
-    //                if (el2.classList.contains("wall")) break;
-    //                el.style.display = "none";
-    //            }
-    //        }
-    //        break;
-    //    case "left":
-            console.log(left + " / " + top);
-            console.log(pmn.findDestinationPoint(left, top));
-
-
-
-                //for (var i = left; i != 0; i = i - 8) {
-                //    (function(i) {
-                        var i =  left;
-                       var t =  setInterval(function() {
-
-
-                                var el2 = document.getElementById(m.getFoodElement(top, i));
-                                //if (!el2.classList.contains("wall")) {
-                                if (i != 48) {
-                                    pm.style.left = i + "px";
-                                    if ((i % 8 == 0) && (top % 8 == 0)) {
-                                        var el = document.getElementById(m.getFoodElement(top, i));
-                                        console.log(el);
-
-                                        el.style.display = "none";
-                                    }
-
-                            } else {
-                                clearInterval(t);
-                            }
-
-                           i -= 1;
-
-                        }, 50);
-                    //})(i);
-
-                //}
-        //    break;
-        //case "top":
-        //    console.log(left + " / " + top);
-        //    for (var i = top; i != 0; i = i - 8) {
-        //        pm.style.top = i + "px";
-        //        if ((i % 8 == 0) && (left % 8 == 0)) {
-        //            var el = document.getElementById(m.getFoodElement(i, left));
-        //            console.log(el);
-        //            var el2 = document.getElementById(m.getFoodElement(i - 8, left));
-        //            if (el2.classList.contains("wall")) break;
-        //            el.style.display = "none";
-        //        }
-        //    }
-        //    break;
-        //case "bottom":
-        //    console.log(left + " / " + top);
-        //    for (var i = top; i < 300; i = i + 4) {
-        //        console.log(i);
-        //        pm.style.top = i + "px";
-        //        if ((i % 8 == 0) && (left % 8 == 0)) {
-        //            var el = document.getElementById(m.getFoodElement(i, left));
-        //            console.log(el);
-        //            var el2 = document.getElementById(m.getFoodElement(i + 8, left));
-        //            if (el2.classList.contains("wall")) break;
-        //            el.style.display = "none";
-        //        }
-        //    }
-        //    break;
-    //};
+    switch (direction) {
+        case "right":
+            var destination = pmn.findDestinationPointRight(left, top);
+            console.log(destination);
+            var i =  left;
+            var t =  setInterval(function() {
+                if (i != destination) {
+                    pm.style.left = i + "px";
+                    if ((i % 8 == 0) && (top % 8 == 0)) {
+                        var el = document.getElementById(m.getFoodElement(top, i));
+                        el.style.display = "none";
+                    }
+                } else {
+                    pm.style.left = destination + "px";
+                    clearInterval(t);
+                }
+                i += 1;
+            }, 30);
+            break;
+        case "left":
+            var destination = pmn.findDestinationPointLeft(left, top);
+            var i =  left;
+            var t =  setInterval(function() {
+                if (i != destination) {
+                    pm.style.left = i + "px";
+                    if ((i % 8 == 0) && (top % 8 == 0)) {
+                        var el = document.getElementById(m.getFoodElement(top, i));
+                        el.style.display = "none";
+                    }
+                } else {
+                    pm.style.left = destination + "px";
+                    clearInterval(t);
+                }
+               i -= 1;
+            }, 30);
+            break;
+        case "top":
+            var destination = pmn.findDestinationPointTop(left, top);
+            var i =  top;
+            var t =  setInterval(function() {
+                if (i != destination) {
+                    pm.style.top = i + "px";
+                    if ((left % 8 == 0) && (i % 8 == 0)) {
+                        var el = document.getElementById(m.getFoodElement(i, left));
+                        el.style.display = "none";
+                    }
+                } else {
+                    pm.style.top = destination + "px";
+                    clearInterval(t);
+                }
+                i -= 1;
+            }, 30);
+            break;
+        case "bottom":
+            var destination = pmn.findDestinationPointBottom(left, top);
+            var i =  top;
+            var t =  setInterval(function() {
+                if (i != destination) {
+                    pm.style.top = i + "px";
+                    if ((left % 8 == 0) && (i % 8 == 0)) {
+                        var el = document.getElementById(m.getFoodElement(i, left));
+                        el.style.display = "none";
+                    }
+                } else {
+                    pm.style.top = destination + "px";
+                    clearInterval(t);
+                }
+                i += 1;
+            }, 30);
+            break;
+        default: break;
+    }
 
 
 };
 
-Pacman.prototype.a = function (event) {
+Pacman.prototype.catchPressedKey = function (event) {
 
     var pm = new Pacman();
 
-    if (event.keyCode == 37) {
-        pm.move();
+    if (event.keyCode == properties.key.left) {
+        pm.move("left");
     }
-    if (event.keyCode == 39) {
+    if (event.keyCode == properties.key.right) {
         pm.move("right");
     }
-    if (event.keyCode == 38) {
+    if (event.keyCode == properties.key.up) {
         pm.move("top");
     }
-    if (event.keyCode == 40) {
+    if (event.keyCode == properties.key.down) {
         pm.move("bottom");
     }
 };
 
 var pm = new Pacman();
 
-pm.create(88, 184);
-window.addEventListener("keydown", pm.a, false);
+pm.createEnvironment(88, 184, "pm");
+
+window.addEventListener("keydown", pm.catchPressedKey, false);
+
+function Ghost() {
+}
+
+Ghost.prototype = Object.create(Environment.prototype);
+
+var ghost = new Ghost();
+
+Ghost.prototype.move = function() {
+    var ghost = document.getElementsByClassName("ghost")[0];
+    var style = window.getComputedStyle(ghost);
+    var left = parseInt(style.getPropertyValue("left")),
+        top = parseInt(style.getPropertyValue("top"));
+    //var mp = new Map();
+    //if(!document.getElementById(mp.getFoodElement(top, left - 8)).contains(properties.textVar.wall)) {
+    //    ghost.style.left -= 8 + "px";
+    //}
+};
+
+ghost.move();
+
+ghost.createEnvironment(108, 88, "ghost");
+
+
