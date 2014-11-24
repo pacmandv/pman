@@ -369,14 +369,17 @@ Ghost.prototype.move = function() {
     var style = window.getComputedStyle(ghost);
     var left = parseInt(style.getPropertyValue("left")),
         top = parseInt(style.getPropertyValue("top"));
-    //var mp = new Map();
-    //if(!document.getElementById(mp.getFoodElement(top, left - 8)).contains(properties.textVar.wall)) {
-    //    ghost.style.left -= 8 + "px";
-    //}
+    var  i = 0;
+    while(!document.getElementById(m.getFoodElement(top, left - i)).classList.contains(properties.textVar.wall)) {
+        console.log(i);
+        console.log(ghost.style.left);
+        ghost.style.left = left - i + "px";
+        i += 8;
+    }
 };
 
-ghost.move();
+ghost.createEnvironment(104, 88, "ghost");
 
-ghost.createEnvironment(108, 88, "ghost");
+ghost.move();
 
 
