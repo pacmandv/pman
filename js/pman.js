@@ -18,10 +18,15 @@ var properties = {
 
     },
     key: {
-    left: 37,
-    up: 38,
-    right: 39,
-    down: 40
+        left: 37,
+        up: 38,
+        right: 39,
+        down: 40
+    },
+    move: {
+        pacmanDefaultSpeed: 30,
+        pacmanEatFoodSpeed: 50,
+        pacmanDirection: 'left'
     }
 };
 
@@ -232,7 +237,7 @@ Pacman.prototype.findDestinationPointRight = function (positionX, positionY) {
 
 Pacman.prototype.findDestinationPointTop = function (positionX, positionY) {
     for (var i = positionY; i >= 0; i = i - properties.mapElement.elementSize) {
-        console.log(i);
+        //console.log(i);
         var el2 = document.getElementById(m.getFoodElement(i, positionX));
         if(el2.classList.contains(properties.textVar.wall)) {
             return i + properties.mapElement.elementSize;
@@ -242,12 +247,47 @@ Pacman.prototype.findDestinationPointTop = function (positionX, positionY) {
 
 Pacman.prototype.findDestinationPointBottom = function (positionX, positionY) {
     for (var i = positionY; i <= 500; i = i + properties.mapElement.elementSize) {
-        console.log(i);
+        //console.log(i);
         var el2 = document.getElementById(m.getFoodElement(i, positionX));
         if(el2.classList.contains(properties.textVar.wall)) {
             return i - properties.mapElement.elementSize;
         }
     }
+};
+
+Pacman.prototype.isFoodExist = function (foodElement) {
+    var style = window.getComputedStyle(foodElement);
+    return !!(foodElement.classList.contains('food') && style.display != 'none');
+};
+
+Pacman.prototype.isTunnelExit = function() {
+
+};
+
+Pacman.prototype.callByInterval = function (destination, i ,pmn, pm, tt ) {
+    var t =  setInterval(function() {
+        console.log('left call ' + properties.move.pacmanDirection);
+        if(properties.move.pacmanDirection != "left") {
+            clearTimeout(t);
+            return;
+        }
+        if (i != destination) {
+            pm.style.left = i + "px";
+            if ((i % 8 == 0) && (top % 8 == 0)) {
+                var el = document.getElementById(m.getFoodElement(top, i));
+                if (pmn.isFoodExist(el)) {
+                    properties.move.pacmanDefaultSpeed = 1000;
+                } else {
+                    properties.move.pacmanDefaultSpeed = 1;
+                }
+                el.style.display = "none";
+            }
+        } else {
+            pm.style.left = destination + "px";
+            clearInterval(t);
+        }
+        i -= 1;
+    }, properties.move.pacmanDefaultSpeed + tt);
 };
 
 Pacman.prototype.move = function (direction) {
@@ -260,7 +300,7 @@ Pacman.prototype.move = function (direction) {
     switch (direction) {
         case "right":
             var destination = pmn.findDestinationPointRight(left, top);
-            console.log(destination);
+            //console.log(destination);
             var i =  left;
             var t =  setInterval(function() {
                 if (i != destination) {
@@ -274,11 +314,12 @@ Pacman.prototype.move = function (direction) {
                     clearInterval(t);
                 }
                 i += 1;
-            }, 30);
+            }, properties.move.pacmanDefaultSpeed);
             break;
         case "left":
             var destination = pmn.findDestinationPointLeft(left, top);
             var i =  left;
+            //console.log(i);
             var t =  setInterval(function() {
                 if (i != destination) {
                     pm.style.left = i + "px";
@@ -290,8 +331,9 @@ Pacman.prototype.move = function (direction) {
                     pm.style.left = destination + "px";
                     clearInterval(t);
                 }
-               i -= 1;
-            }, 30);
+                i -= 1;
+            }, properties.move.pacmanDefaultSpeed);
+
             break;
         case "top":
             var destination = pmn.findDestinationPointTop(left, top);
@@ -308,7 +350,7 @@ Pacman.prototype.move = function (direction) {
                     clearInterval(t);
                 }
                 i -= 1;
-            }, 30);
+            }, properties.move.pacmanDefaultSpeed);
             break;
         case "bottom":
             var destination = pmn.findDestinationPointBottom(left, top);
@@ -325,12 +367,10 @@ Pacman.prototype.move = function (direction) {
                     clearInterval(t);
                 }
                 i += 1;
-            }, 30);
+            }, properties.move.pacmanDefaultSpeed);
             break;
         default: break;
     }
-
-
 };
 
 Pacman.prototype.catchPressedKey = function (event) {
@@ -338,16 +378,20 @@ Pacman.prototype.catchPressedKey = function (event) {
     var pm = new Pacman();
 
     if (event.keyCode == properties.key.left) {
-        pm.move("left");
+        //pm.move("left");
+        properties.move.pacmanDirection = "left";
     }
     if (event.keyCode == properties.key.right) {
-        pm.move("right");
+        //pm.move("right");
+        properties.move.pacmanDirection = "right";
     }
     if (event.keyCode == properties.key.up) {
-        pm.move("top");
+        //pm.move("top");
+        properties.move.pacmanDirection = "top";
     }
     if (event.keyCode == properties.key.down) {
-        pm.move("bottom");
+        //pm.move("bottom");
+        properties.move.pacmanDirection = "bottom";
     }
 };
 
@@ -369,12 +413,18 @@ Ghost.prototype.move = function() {
     var style = window.getComputedStyle(ghost);
     var left = parseInt(style.getPropertyValue("left")),
         top = parseInt(style.getPropertyValue("top"));
-    var  i = 0;
-    while(!document.getElementById(m.getFoodElement(top, left - i)).classList.contains(properties.textVar.wall)) {
-        console.log(i);
-        console.log(ghost.style.left);
-        ghost.style.left = left - i + "px";
-        i += 8;
+    var i = 0;
+    var j = 0;
+    if(!document.getElementById(m.getFoodElement(top, left - i)).classList.contains(properties.textVar.wall)) {
+        while(!document.getElementById(m.getFoodElement(top, left - i)).classList.contains(properties.textVar.wall)) {
+            ghost.style.left = left - i + "px";
+            i += 8;
+        }
+    } else {
+        while(!document.getElementById(m.getFoodElement(top + j, i)).classList.contains(properties.textVar.wall)) {
+            ghost.style.top = top + j + "px";
+            j += 8;
+        }
     }
 };
 
@@ -383,3 +433,23 @@ ghost.createEnvironment(104, 88, "ghost");
 ghost.move();
 
 
+function Main() {}
+
+Main.prototype.init = function () {
+    setInterval(function() {
+        if(properties.move.pacmanDirection == "left") {
+            pm.move("left");
+        } else if (properties.move.pacmanDirection == "right") {
+            pm.move("right");
+        } else if (properties.move.pacmanDirection == "top") {
+            pm.move("top");
+        } else if (properties.move.pacmanDirection == "bottom") {
+            pm.move("bottom");
+        }
+
+    }, 100)
+};
+
+mFunction = new Main();
+
+mFunction.init();
