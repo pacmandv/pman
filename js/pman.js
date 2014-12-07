@@ -27,6 +27,15 @@ var properties = {
         pacmanDefaultSpeed: 30,
         pacmanEatFoodSpeed: 50,
         pacmanDirection: 'left'
+    },
+    score: {
+        scoreResult: 0,
+        costOfFood: 10
+    },
+    status: {
+        isMoveComplete: false,
+        isMoveStart: false,
+        canMove: false
     }
 };
 
@@ -204,6 +213,15 @@ Environment.prototype.createEnvironment = function(positionX, positionY, classNa
     mapBody.appendChild(environment);
 };
 
+Map.prototype.setScore = function (el) {
+    var scoreEl = document.getElementsByClassName("score-count")[0];
+    if(el.style.display != "none" && el.classList.contains("food")) {
+        properties.score.scoreResult += properties.score.costOfFood;
+        scoreEl.innerHTML = properties.score.scoreResult;
+        el.style.display = "none";
+    }
+};
+
 Pacman.prototype = Object.create(Environment.prototype);
 
 Pacman.prototype.setDirection = function () {
@@ -266,7 +284,7 @@ Pacman.prototype.isTunnelExit = function() {
 
 Pacman.prototype.callByInterval = function (destination, i ,pmn, pm, tt ) {
     var t =  setInterval(function() {
-        console.log('left call ' + properties.move.pacmanDirection);
+        console.log('left call ' + destination);
         if(properties.move.pacmanDirection != "left") {
             clearTimeout(t);
             return;
@@ -289,14 +307,95 @@ Pacman.prototype.callByInterval = function (destination, i ,pmn, pm, tt ) {
         i -= 1;
     }, properties.move.pacmanDefaultSpeed + tt);
 };
+var destination = 0;
+
+Pacman.prototype.moveLeft = function() {
+    if(properties.move.pacmanDirection != "left") return;
+    var pm = document.getElementsByClassName("pm")[0];
+    var style = window.getComputedStyle(pm);
+    var left = parseInt(style.getPropertyValue("left")),
+        top = parseInt(style.getPropertyValue("top"));
+    var pmn = new Pacman();
+    var map = new Map();
+    if(destination == 0) {
+        destination = pmn.findDestinationPointLeft(left, top);
+    }
+    var i =  left;
+    var t =  setInterval(function() {
+        //console.log('left call ' + destination);
+        if(properties.move.pacmanDirection != "left" || destination == 0) {
+            clearTimeout(t);
+            return;
+        }
+        if (i != destination) {
+            properties.status.isMoveStart = true;
+            pm.style.left = i + "px";
+            if ((i % 8 == 0) && (top % 8 == 0)) {
+                var el = document.getElementById(m.getFoodElement(top, i));
+                map.setScore(el);
+                el.style.display = 'none';
+            }
+        } else {
+            pm.style.left = destination + "px";
+            clearInterval(t);
+            properties.move.pacmanDirection = '';
+            properties.status.isMoveComplete = true;
+            properties.status.isMoveStart = false;
+            destination = 0;
+        }
+        i -= 1;
+    }, properties.move.pacmanDefaultSpeed + 0);
+};
+
+Pacman.prototype.moveRight = function() {
+    if(properties.move.pacmanDirection != "right") return;
+    var pm = document.getElementsByClassName("pm")[0];
+    var style = window.getComputedStyle(pm);
+    var left = parseInt(style.getPropertyValue("left")),
+        top = parseInt(style.getPropertyValue("top"));
+    if(left % 8 == 0) {
+
+    }
+    var pmn = new Pacman();
+    var map = new Map();
+    if(destination == 0) {
+        destination = pmn.findDestinationPointLeft(left, top);
+    }
+    var i =  left;
+    var t =  setInterval(function() {
+        if(properties.move.pacmanDirection != "left" || destination == 0) {
+            clearTimeout(t);
+            return;
+        }
+        if (i != destination) {
+            properties.status.isMoveStart = true;
+            pm.style.left = i + "px";
+            if ((i % 8 == 0) && (top % 8 == 0)) {
+                var el = document.getElementById(m.getFoodElement(top, i));
+                map.setScore(el);
+                el.style.display = 'none';
+            }
+        } else {
+            pm.style.left = destination + "px";
+            clearInterval(t);
+            properties.move.pacmanDirection = '';
+            properties.status.isMoveComplete = true;
+            properties.status.isMoveStart = false;
+            destination = 0;
+
+        }
+        i += 1;
+    }, properties.move.pacmanDefaultSpeed + 0);
+};
 
 Pacman.prototype.move = function (direction) {
     var pm = document.getElementsByClassName("pm")[0];
     var style = window.getComputedStyle(pm);
     var left = parseInt(style.getPropertyValue("left")),
         top = parseInt(style.getPropertyValue("top"));
-    var l = 0;
+    //var l = 0;
     var pmn = new Pacman();
+    var destinationLeft = pmn.findDestinationPointLeft(left, top);
     switch (direction) {
         case "right":
             var destination = pmn.findDestinationPointRight(left, top);
@@ -317,22 +416,8 @@ Pacman.prototype.move = function (direction) {
             }, properties.move.pacmanDefaultSpeed);
             break;
         case "left":
-            var destination = pmn.findDestinationPointLeft(left, top);
-            var i =  left;
-            //console.log(i);
-            var t =  setInterval(function() {
-                if (i != destination) {
-                    pm.style.left = i + "px";
-                    if ((i % 8 == 0) && (top % 8 == 0)) {
-                        var el = document.getElementById(m.getFoodElement(top, i));
-                        el.style.display = "none";
-                    }
-                } else {
-                    pm.style.left = destination + "px";
-                    clearInterval(t);
-                }
-                i -= 1;
-            }, properties.move.pacmanDefaultSpeed);
+
+            pmn.callByInterval(destinationLeft, i,  pmn, pm, 0);
 
             break;
         case "top":
@@ -374,23 +459,21 @@ Pacman.prototype.move = function (direction) {
 };
 
 Pacman.prototype.catchPressedKey = function (event) {
-
-    var pm = new Pacman();
-
     if (event.keyCode == properties.key.left) {
-        //pm.move("left");
         properties.move.pacmanDirection = "left";
+        properties.status.isMoveComplete = false;
+        properties.status.isMoveStart = true;
     }
     if (event.keyCode == properties.key.right) {
-        //pm.move("right");
         properties.move.pacmanDirection = "right";
+        properties.status.isMoveComplete = false;
+        properties.status.isMoveStart = true;
+        properties.status.canMove = true;
     }
     if (event.keyCode == properties.key.up) {
-        //pm.move("top");
         properties.move.pacmanDirection = "top";
     }
     if (event.keyCode == properties.key.down) {
-        //pm.move("bottom");
         properties.move.pacmanDirection = "bottom";
     }
 };
@@ -436,17 +519,24 @@ ghost.move();
 function Main() {}
 
 Main.prototype.init = function () {
-    setInterval(function() {
+    var time = setInterval(function() {
+        //if(properties.status.isMoveComplete) return;
+        //if(properties.status.isMoveStart) return;
+        if(properties.status.canMove) return;
+
         if(properties.move.pacmanDirection == "left") {
-            pm.move("left");
+            //properties.status.isMoveStart = true;
+            pm.moveLeft();
         } else if (properties.move.pacmanDirection == "right") {
-            pm.move("right");
+            //pm.move("right");
+            //properties.status.isMoveStart = true;
+            pm.moveRight();
         } else if (properties.move.pacmanDirection == "top") {
             pm.move("top");
         } else if (properties.move.pacmanDirection == "bottom") {
             pm.move("bottom");
         }
-
+        console.log('global interval');
     }, 100)
 };
 
